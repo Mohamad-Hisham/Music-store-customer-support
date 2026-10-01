@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "music-store-customer-support"
+version = "0.1.0"
+description = "LangGraph customer support workflow for a digital music store"
+requires-python = ">=3.11"
+readme = "README.md"
+dependencies = [
+    "langchain>=0.3,<1.0",
+    "langchain-community>=0.3,<1.0",
+    "langchain-openai>=0.2,<1.0",
+    "langgraph>=0.2,<1.0",
+    "sqlalchemy>=2.0,<3.0",
+    "requests>=2.32,<3.0",
+    "python-dotenv>=1.0,<2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
