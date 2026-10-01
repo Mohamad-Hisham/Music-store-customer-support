@@ -38,7 +38,8 @@ the customer is authenticated; they only use tools appropriate to their domain.
 ├── docs/
 │   └── system-design.md
 ├── notebooks/
-│   └── README.md
+│   ├── README.md
+│   └── music_store_customer_support.ipynb
 ├── src/music_support/
 │   ├── __init__.py
 │   ├── agents.py
@@ -52,7 +53,12 @@ the customer is authenticated; they only use tools appropriate to their domain.
 │       ├── catalog.py
 │       └── invoices.py
 ├── .env.example
+├── .streamlit/
+│   └── config.toml
+├── streamlit_app.py
 ├── requirements.txt
+├── tests/
+│   └── test_system.py
 └── README.md
 ```
 
@@ -64,11 +70,14 @@ The implementation keeps those fields and adds only routing fields needed to mak
 interrupt/resume and multi-step routing explicit:
 
 - `customer_id`: verified customer identifier, stored as short-term session data.
+- `customer_request`: original request preserved while credential input is collected.
 - `messages`: complete conversation history; new messages are appended.
 - `loaded_memory`: serialized preferences loaded before routing.
 - `pending_input`: human-in-the-loop request waiting for an answer.
+- `awaiting_human`: explicit flag distinguishing a credential answer from a new request.
 - `requested_agents`: specialist work selected by the supervisor.
 - `completed_agents`: specialist work already completed for this request.
+- `response_parts`: specialist results collected before final response creation.
 - `final_response`: response assembled for the customer.
 - `remaining_steps`: recursion budget managed by LangGraph.
 
@@ -147,3 +156,9 @@ routing without losing messages or `customer_id`.
 5. Add specialist prompts and supervisor routing.
 6. Assemble interrupt/resume graph behavior.
 7. Add notebook demonstrations for the two PDF test scenarios.
+
+## 8. Code map and diagrams
+
+The detailed file-by-file map and connection diagrams are in
+[docs/code-map.md](code-map.md). It explains which folder owns each concern and
+shows how the UI, graph, state, tools, database, memory, and tests connect.

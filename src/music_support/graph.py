@@ -37,16 +37,20 @@ def _format_rows(rows: list[dict[str, Any]], empty: str) -> str:
 
 
 def _find_customer_id(query: str) -> str | None:
-    match = CUSTOMER_ID_PATTERN.search(query)
-    if match:
-        return match.group(1)
-    bare_id = re.fullmatch(r"\s*(\d+)\s*", query)
-    if bare_id:
-        return bare_id.group(1)
-
     from .database import ChinookRepository, get_engine_for_chinook_db
 
     repository = ChinookRepository(get_engine_for_chinook_db())
+    match = CUSTOMER_ID_PATTERN.search(query)
+    candidate_id = match.group(1) if match else None
+    bare_id = re.fullmatch(r"\s*(\d+)\s*", query)
+    candidate_id = candidate_id or (bare_id.group(1) if bare_id else None)
+    if candidate_id:
+        row = repository.fetch_one(
+            "SELECT CustomerId FROM Customer WHERE CustomerId = :customer_id",
+            {"customer_id": int(candidate_id)},
+        )
+        return str(row["CustomerId"]) if row else None
+
     email = EMAIL_PATTERN.search(query)
     phone = PHONE_PATTERN.search(query)
     if email:

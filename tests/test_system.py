@@ -79,6 +79,15 @@ def test_bare_customer_id_is_accepted():
     assert "most recent purchase" in result["final_response"]
 
 
+def test_unknown_customer_id_is_rejected():
+    app = build_support_graph()
+    config = {"configurable": {"thread_id": "unknown-id-test"}}
+    app.invoke({"messages": [("user", "How much was my most recent purchase?")]}, config)
+    paused = app.invoke(Command(resume="999999"), config)
+    assert paused["__interrupt__"]
+    assert "couldn't find" in paused["__interrupt__"][0].value
+
+
 def test_follow_up_uses_saved_preferences_in_same_thread():
     app = build_support_graph()
     config = {"configurable": {"thread_id": "preference-follow-up-test"}}
