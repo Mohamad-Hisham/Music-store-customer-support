@@ -102,3 +102,19 @@ def test_follow_up_uses_saved_preferences_in_same_thread():
     )
     assert "Songs matching your preferences" in second["final_response"]
     assert "The Rolling Stones" in second["final_response"]
+
+
+def test_singular_rolling_stone_request_saves_preference():
+    app = build_support_graph()
+    config = {"configurable": {"thread_id": "singular-preference-test"}}
+    first = app.invoke(
+        {"messages": [("user", "My phone number is +55 (12) 3923-5555. What albums do you have by Rolling Stone?")]},
+        config,
+    )
+    assert "Music catalog results" in first["final_response"]
+    second = app.invoke(
+        {"messages": [("user", "List some songs that match my preferences?")]},
+        config,
+    )
+    assert "Songs matching your preferences" in second["final_response"]
+    assert "track:" in second["final_response"]

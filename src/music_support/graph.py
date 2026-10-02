@@ -168,7 +168,7 @@ def create_memory(state: State) -> dict[str, Any]:
     response = "I've found the information you requested:\n\n" + "\n\n".join(response_parts)
     response += "\n\nIf you need any more details, feel free to ask!"
     query = _request_text(state)
-    artists = ["The Rolling Stones"] if "rolling stones" in query.lower() else []
+    artists = ["The Rolling Stones"] if "rolling stone" in query.lower() else []
     save_memory(state["customer_id"], artists=artists, genres=[])
     return {"final_response": response, "messages": [AIMessage(content=response)]}
 
